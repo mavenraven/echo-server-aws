@@ -1,7 +1,3 @@
-resource "aws_ecr_repository" "echo_server_repo" {
-  name = "echo_server"
-}
-
 resource "aws_iam_role" "codebuild_role" {
   name = "CodeBuild"
   max_session_duration = 60 * 60
