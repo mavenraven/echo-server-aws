@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name = "CodePipeline2"
+  name = "CodePipeline3"
   max_session_duration = 60 * 60
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -27,6 +27,24 @@ resource "aws_iam_role_policy_attachment" "codepipeline_full_access_policy" {
 resource "aws_codestarconnections_connection" "echo_server_codestarconnection" {
   name          = "echo_server_codestarconnection"
   provider_type = "GitHub"
+}
+
+data "aws_iam_policy_document" "codepipeline_policy_document" {
+  statement {
+    effect    = "Allow"
+    actions   = ["codestar-connections:UseConnection"]
+    resources = [aws_codestarconnections_connection.echo_server_codestarconnection.arn]
+  }
+}
+
+resource "aws_iam_policy" "codepipline_codestarconnection_policy" {
+  name = "CodeStarConnectionPolicy"
+  policy = data.aws_iam_policy_document.codepipeline_policy_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "codepipeline_codestarconnection_policy_attachment" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = aws_iam_policy.codepipline_codestarconnection_policy.arn
 }
 
 resource "aws_codepipeline" "echo_server_pipeline" {
