@@ -43,7 +43,6 @@ phases:
       docker: 18
   build:
     commands:
-      - echo "Building the Docker image..."
       - docker build -t ${aws_ecr_repository.echo_server_repo.repository_url}:latest .
       - $(aws ecr get-login --no-include-email --region ${data.aws_region.current.name})
       - docker push ${aws_ecr_repository.echo_server_repo.repository_url}:latest
