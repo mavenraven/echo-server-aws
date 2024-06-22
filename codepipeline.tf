@@ -79,6 +79,12 @@ resource "aws_iam_role_policy_attachment" "codepipeline_codestarconnection_polic
   policy_arn = aws_iam_policy.codepipline_codestarconnection_policy.arn
 }
 
+resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_dev_access_policy" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
+}
+
+
 resource "aws_codepipeline" "echo_server_pipeline" {
   name     = "echo_server_pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
@@ -116,7 +122,7 @@ resource "aws_codepipeline" "echo_server_pipeline" {
       provider         = "CodeBuild"
       version          = "1"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output"]
+      output_artifacts = ["container_name"]
 
       configuration = {
         ProjectName = aws_codebuild_project.example.name
