@@ -1,6 +1,11 @@
-/*
+
+resource "aws_s3_bucket" "codepipeline_bucket" {
+  bucket = "codepipeline-artifacts-${data.aws_caller_identity.current.account_id}"
+  force_destroy = true
+}
+
 resource "aws_iam_role" "codepipeline_role" {
-  name = "CodePipeline"
+  name = "CodePipeline2"
   max_session_duration = 60 * 60
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -19,9 +24,18 @@ resource "aws_iam_role_policy_attachment" "codepipeline_full_access_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
 }
 
-resource "aws_codepipeline" "example" {
-  name     = "example-pipeline"
+resource "aws_codestarconnections_connection" "echo_server_codestarconnection" {
+  name          = "echo_server_codestarconnection"
+  provider_type = "GitHub"
+}
+
+resource "aws_codepipeline" "echo_server_pipeline" {
+  name     = "echo_server_pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
+  artifact_store {
+    location = aws_s3_bucket.codepipeline_bucket.bucket
+    type     = "S3"
+  }
 
   stage {
     name = "Source"
@@ -29,16 +43,15 @@ resource "aws_codepipeline" "example" {
     action {
       name             = "Source"
       category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
       version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner      = "your-github-username"
-        Repo       = "your-repo-name"
-        Branch     = "master"
-        OAuthToken = var.github_token
+        ConnectionArn = aws_codestarconnections_connection.echo_server_codestarconnection.arn
+        FullRepositoryId = "mavenraven/echo-server"
+        BranchName = "master"
       }
     }
   }
@@ -56,28 +69,8 @@ resource "aws_codepipeline" "example" {
       output_artifacts = ["build_output"]
 
       configuration = {
-        ProjectName = aws_codebuild_project.build.name
-      }
-    }
-  }
-
-  stage {
-    name = "Deploy"
-
-    action {
-      name            = "Deploy"
-      category        = "Deploy"
-      owner           = "AWS"
-      provider        = "ECS"
-      version         = "1"
-      input_artifacts = ["build_output"]
-
-      configuration = {
-        ClusterName       = aws_ecs_cluster.main.name
-        ServiceName       = aws_ecs_service.main.name
-        FileName          = "imagedefinitions.json"
+        ProjectName = aws_codebuild_project.example.name
       }
     }
   }
 }
-*/
