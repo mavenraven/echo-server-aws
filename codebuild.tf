@@ -37,13 +37,10 @@ resource "aws_codebuild_project" "example" {
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      docker: 18
   build:
     commands:
       - docker build -t ${aws_ecr_repository.echo_server_repo.repository_url}:$CODEBUILD_RESOLVED_SOURCE_VERSION .
-      - $(aws ecr get-login --no-include-email --region ${data.aws_region.current.name})
+      - aws ecr get-login-password --region ${data.aws_region.current.name} | docker login --username AWS --password-stdin ${aws_ecr_repository.echo_server_repo.repository_url}
       - docker push ${aws_ecr_repository.echo_server_repo.repository_url}:$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo "$CODEBUILD_RESOLVED_SOURCE_VERSION" > container_name
 artifacts:
@@ -56,7 +53,7 @@ EOF
   }
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:4.0"
+    image                       = "aws/codebuild/standard:7.0"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = true
     image_pull_credentials_type = "CODEBUILD"
