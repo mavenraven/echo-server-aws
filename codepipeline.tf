@@ -129,4 +129,24 @@ resource "aws_codepipeline" "echo_server_pipeline" {
       }
     }
   }
+
+  /*
+  stage {
+    name = "Deploy"
+
+    action {
+      name             = "Deploy"
+      category         = "Deploy"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      version          = "1"
+      input_artifacts  = ["source_output"]
+      output_artifacts = ["container_name"]
+
+      configuration = {
+        ProjectName = aws_codebuild_project.example.name
+      }
+    }
+  }
+   */
 }
