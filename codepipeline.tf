@@ -6,7 +6,7 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name = "CodePipeline3"
+  name = "CodePipeline"
   max_session_duration = 60 * 60
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -24,6 +24,11 @@ resource "aws_iam_role" "codepipeline_role" {
 resource "aws_iam_role_policy_attachment" "codepipeline_full_access_policy" {
   role       = aws_iam_role.codepipeline_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "codepipeline_codedeploy_policy" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployFullAccess"
 }
 
 data "aws_iam_policy_document" "codepipeline_s3_policy_document" {

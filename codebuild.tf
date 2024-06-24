@@ -25,7 +25,7 @@ resource "aws_iam_role_policy_attachment" "codebuild_ecr_access_policy" {
 
 resource "aws_iam_role_policy_attachment" "codebuild_cloudwatch_access_policy" {
   role       = aws_iam_role.codebuild_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs" # just re-use this since it has what we need
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs" #TODO: just re-use this since it has what we need
 }
 
 resource "aws_codebuild_project" "example" {
