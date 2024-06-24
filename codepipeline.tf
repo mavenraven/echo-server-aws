@@ -31,6 +31,11 @@ resource "aws_iam_role_policy_attachment" "codepipeline_codedeploy_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployFullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "codepipeline_ecs_policy" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+}
+
 data "aws_iam_policy_document" "codepipeline_s3_policy_document" {
   statement {
     effect = "Allow"
