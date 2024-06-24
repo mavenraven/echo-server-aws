@@ -122,7 +122,7 @@ resource "aws_codepipeline" "echo_server_pipeline" {
       provider         = "CodeBuild"
       version          = "1"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["container_name"]
+      output_artifacts = ["build_output"]
 
       configuration = {
         ProjectName = aws_codebuild_project.example.name
@@ -130,7 +130,6 @@ resource "aws_codepipeline" "echo_server_pipeline" {
     }
   }
 
-  /*
   stage {
     name = "Deploy"
 
@@ -138,15 +137,16 @@ resource "aws_codepipeline" "echo_server_pipeline" {
       name             = "Deploy"
       category         = "Deploy"
       owner            = "AWS"
-      provider         = "CodeBuild"
+      provider         = "CodeDeployToECS"
       version          = "1"
-      input_artifacts  = ["source_output"]
-      output_artifacts = ["container_name"]
+      input_artifacts  = ["build_output"]
 
       configuration = {
-        ProjectName = aws_codebuild_project.example.name
+        ApplicationName = aws_codedeploy_app.codedeploy_app.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.codedeploy_deployment_group.deployment_group_name
+        TaskDefinitionTemplateArtifact = "build_output"
+        AppSpecTemplateArtifact = "build_output"
       }
     }
   }
-   */
 }

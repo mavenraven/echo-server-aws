@@ -18,7 +18,8 @@ resource "aws_ecs_service" "ecs_service" {
   name = "echo-server-task"
   task_definition = aws_ecs_task_definition.dummy.arn
   cluster = aws_ecs_cluster.ecs_cluster.arn
-  desired_count = 1
+  #TODO: remove completely once code deploy is set up
+#  desired_count = 1
   deployment_controller {
     type = "CODE_DEPLOY"
   }

@@ -42,10 +42,11 @@ phases:
       - docker build -t ${aws_ecr_repository.echo_server_repo.repository_url}:$CODEBUILD_RESOLVED_SOURCE_VERSION .
       - aws ecr get-login-password --region ${data.aws_region.current.name} | docker login --username AWS --password-stdin ${aws_ecr_repository.echo_server_repo.repository_url}
       - docker push ${aws_ecr_repository.echo_server_repo.repository_url}:$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - echo "$CODEBUILD_RESOLVED_SOURCE_VERSION" > container_name
 artifacts:
   files:
-    - container_name
+    - appspec.yaml
+    - taskdef.json
+  name: build_output
 EOF
   }
   artifacts {
