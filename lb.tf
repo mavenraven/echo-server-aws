@@ -35,4 +35,5 @@ resource "aws_lb_target_group" "green" {
 	port = 80
 	vpc_id = aws_vpc.vpc.id
 	target_type = "ip"
+	deregistration_delay = "5"
 }
