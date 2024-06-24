@@ -43,7 +43,7 @@ phases:
       - aws ecr get-login-password --region ${data.aws_region.current.name} | docker login --username AWS --password-stdin ${aws_ecr_repository.echo_server_repo.repository_url}
       - docker push ${aws_ecr_repository.echo_server_repo.repository_url}:$CODEBUILD_RESOLVED_SOURCE_VERSION
       - m4 -D 'ECS_TASK_EXECUTION_ROLE_ARN=${aws_iam_role.fargate_iam_role.arn}' taskdef.json > temp && mv temp taskdef.json
-      - echo "{\"name\":\"echo-server\", \"ImageURI\":\"${data.aws_caller_identity.current.account_id}.dkr.ecr.us-east-2.amazonaws.com/echo_server:$CODEBUILD_RESOLVED_SOURCE_VERSION\"}" > imageDetail.json
+      - echo "{\"ImageURI\":\"${data.aws_caller_identity.current.account_id}.dkr.ecr.us-east-2.amazonaws.com/echo_server:$CODEBUILD_RESOLVED_SOURCE_VERSION\"}" > imageDetail.json
 artifacts:
   files:
     - appspec.yaml
