@@ -25,10 +25,12 @@ resource "aws_lb_target_group" "blue" {
 	protocol = "HTTP"
 	port = 80
 	vpc_id = aws_vpc.vpc.id
+	target_type = "ip"
 }
 
 resource "aws_lb_target_group" "green" {
 	protocol = "HTTP"
 	port = 80
 	vpc_id = aws_vpc.vpc.id
+	target_type = "ip"
 }

@@ -27,6 +27,10 @@ resource "aws_iam_role_policy_attachment" "aws_code_deploy_policy_attachment" {
   role       = aws_iam_role.codedeploy_iam_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "code_deploy_ecs_access_attachment" {
+  role       = aws_iam_role.codedeploy_iam_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+}
 
 resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
   app_name = aws_codedeploy_app.codedeploy_app.name
@@ -43,6 +47,16 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
       action                           = "TERMINATE"
       termination_wait_time_in_minutes = 5
     }
+  }
+
+  deployment_style {
+    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_type   = "BLUE_GREEN"
+  }
+
+  ecs_service {
+    cluster_name = aws_ecs_cluster.ecs_cluster.name
+    service_name = aws_ecs_service.ecs_service.name
   }
 
   load_balancer_info {
