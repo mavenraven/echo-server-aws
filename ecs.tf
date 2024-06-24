@@ -92,12 +92,3 @@ resource "aws_ecs_task_definition" "dummy" {
   ])
   family = "echo-server-task-definition"
 }
-
-resource "aws_cloudwatch_log_group" "yada" {
-  name = ""
-
-  tags = {
-    Environment = "production"
-    Application = "serviceA"
-  }
-}
