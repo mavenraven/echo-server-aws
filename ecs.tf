@@ -12,8 +12,6 @@ resource "aws_ecs_cluster_capacity_providers" "capacity_providers" {
     weight            = 100
     capacity_provider = "FARGATE"
   }
-
-
 }
 
 resource "aws_ecs_service" "ecs_service" {
@@ -36,7 +34,7 @@ resource "aws_ecs_service" "ecs_service" {
   }
 }
 
-data "aws_iam_policy_document" "fargate_policy_document" {
+data "aws_iam_policy_document" "fargate_trust_policy_document" {
   statement {
     effect = "Allow"
 
@@ -49,13 +47,31 @@ data "aws_iam_policy_document" "fargate_policy_document" {
   }
 }
 
+data "aws_iam_policy_document" "fargate_create_log_groups_policy_document" {
+  statement {
+    effect = "Allow"
+
+    actions = ["logs:CreateLogGroup"]
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+}
+
+resource "aws_iam_policy" "fargate_create_log_groups_policy" {
+  policy = data.aws_iam_policy_document.fargate_create_log_groups_policy_document.json
+}
+
 resource "aws_iam_role" "fargate_iam_role" {
   name               = "Fargate"
-  assume_role_policy = data.aws_iam_policy_document.fargate_policy_document.json
+  assume_role_policy = data.aws_iam_policy_document.fargate_trust_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "fargate_ec2" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role       = aws_iam_role.fargate_iam_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "fargate_create_logs" {
+  policy_arn = aws_iam_policy.fargate_create_log_groups_policy.arn
   role       = aws_iam_role.fargate_iam_role.name
 }
 
@@ -81,8 +97,8 @@ resource "aws_ecs_task_definition" "dummy" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-create-group = "true"
           awslogs-group = "echo-server"
+          awslogs-create-group = "true"
           awslogs-region = "us-east-2"
           awslogs-stream-prefix = "echo-server"
         }
