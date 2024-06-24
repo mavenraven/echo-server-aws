@@ -2,6 +2,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   name = "echo-server"
 }
 
+#TODO: try removing this completely since I put a  capcity_provider in the service
 resource "aws_ecs_cluster_capacity_providers" "capacity_providers" {
   cluster_name = aws_ecs_cluster.ecs_cluster.name
 
