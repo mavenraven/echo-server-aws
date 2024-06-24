@@ -156,6 +156,7 @@ resource "aws_codepipeline" "echo_server_pipeline" {
         DeploymentGroupName = aws_codedeploy_deployment_group.codedeploy_deployment_group.deployment_group_name
         TaskDefinitionTemplateArtifact = "build_output"
         AppSpecTemplateArtifact = "build_output"
+        Image1ArtifactName = "build_output"
       }
     }
   }
