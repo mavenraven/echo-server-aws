@@ -1,0 +1,7 @@
+- no https
+- fake task definition
+- not HA even with multi AZ
+- policies are sloppy
+- nat gateway used for pulling from ecr
+- split out code build for templating stuff
+- template for ARN in task file
