@@ -12,12 +12,15 @@ resource "aws_ecs_cluster_capacity_providers" "capacity_providers" {
     weight            = 100
     capacity_provider = "FARGATE"
   }
+
+
 }
 
 resource "aws_ecs_service" "ecs_service" {
   name = "echo-server-task"
   task_definition = aws_ecs_task_definition.dummy.arn
   cluster = aws_ecs_cluster.ecs_cluster.arn
+  desired_count = 1
   deployment_controller {
     type = "CODE_DEPLOY"
   }
@@ -27,7 +30,6 @@ resource "aws_ecs_service" "ecs_service" {
     container_port = 80
     target_group_arn = aws_lb_target_group.blue.arn
   }
-
 
   network_configuration {
     subnets = [aws_subnet.subnet-2b.id, aws_subnet.subnet-2b.id]
@@ -40,7 +42,7 @@ data "aws_iam_policy_document" "fargate_policy_document" {
 
     principals {
       type        = "Service"
-      identifiers = ["ecs.amazonaws.com"]
+      identifiers = ["ecs-tasks.amazonaws.com"]
     }
 
     actions = ["sts:AssumeRole"]
@@ -76,7 +78,26 @@ resource "aws_ecs_task_definition" "dummy" {
           hostPort      = 80
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-create-group = "true"
+          awslogs-group = "echo-server"
+          awslogs-region = "us-east-2"
+          awslogs-stream-prefix = "echo-server"
+        }
+      }
     }
+
   ])
   family = "echo-server-task-definition"
+}
+
+resource "aws_cloudwatch_log_group" "yada" {
+  name = ""
+
+  tags = {
+    Environment = "production"
+    Application = "serviceA"
+  }
 }

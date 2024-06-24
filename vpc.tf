@@ -42,3 +42,14 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
 	cidr_ipv4         = "0.0.0.0/0"
 	ip_protocol       = "-1" # semantically equivalent to all ports
 }
+
+resource "aws_route_table" "route_table" {
+	vpc_id = aws_vpc.vpc.id
+
+	# Don't need to route between different endpoints in the VPC.
+	route {
+		cidr_block = "0.0.0.0/0"
+		gateway_id = aws_internet_gateway.internet_gateway.id
+	}
+
+}
