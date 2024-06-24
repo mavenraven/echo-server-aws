@@ -86,7 +86,7 @@ resource "aws_ecs_task_definition" "dummy" {
   container_definitions = jsonencode([
     {
       name = "dummy"
-      image = "471112551398.dkr.ecr.us-east-2.amazonaws.com/echo_server:d770a3ef66b636a6b2b76e798fd50a2f3703e2cd"
+      image = "471112551398.dkr.ecr.us-east-2.amazonaws.com/echo_server:2b99600154dcd91c26245d921a98cdbbc4c095a2"
       memory = 512
       portMappings = [
         {
