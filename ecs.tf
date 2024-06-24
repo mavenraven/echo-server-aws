@@ -79,7 +79,10 @@ resource "aws_iam_role_policy_attachment" "fargate_create_logs" {
   role       = aws_iam_role.fargate_iam_role.name
 }
 
-# Needed just for provisioning. CodePipeline will generate the actual definition dynamically.
+
+# For whatever reason, AWS requires that an ECS service is provisioned with a task definition
+# when the deployment controller is CODE_DEPLOY. So, this task definition just "primes the pump"
+# before the first actual deployment through code deploy.
 resource "aws_ecs_task_definition" "dummy" {
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
