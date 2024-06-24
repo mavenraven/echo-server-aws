@@ -18,8 +18,7 @@ resource "aws_ecs_service" "ecs_service" {
   name = "echo-server-task"
   task_definition = aws_ecs_task_definition.dummy.arn
   cluster = aws_ecs_cluster.ecs_cluster.arn
-  #TODO: remove completely once code deploy is set up
-#  desired_count = 1
+  desired_count = 1
   deployment_controller {
     type = "CODE_DEPLOY"
   }
@@ -91,7 +90,7 @@ resource "aws_ecs_task_definition" "dummy" {
   container_definitions = jsonencode([
     {
       name = "dummy"
-      image = "471112551398.dkr.ecr.us-east-2.amazonaws.com/echo_server:ae27e639556233905262cee768fb166fabc59efd"
+      image = "public.ecr.aws/docker/library/nginx"
       memory = 512
       portMappings = [
         {
