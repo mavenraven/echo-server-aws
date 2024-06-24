@@ -32,6 +32,11 @@ resource "aws_iam_role_policy_attachment" "code_deploy_ecs_access_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "code_deploy_lb_access_attachment" {
+  role       = aws_iam_role.codedeploy_iam_role.name
+  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
+}
+
 resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
   app_name = aws_codedeploy_app.codedeploy_app.name
   deployment_group_name = "echo_server_deployment_group"
@@ -45,7 +50,7 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
 
     terminate_blue_instances_on_deployment_success {
       action                           = "TERMINATE"
-      termination_wait_time_in_minutes = 5
+      termination_wait_time_in_minutes = 1
     }
   }
 

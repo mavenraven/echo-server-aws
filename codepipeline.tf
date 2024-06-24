@@ -157,6 +157,7 @@ resource "aws_codepipeline" "echo_server_pipeline" {
         TaskDefinitionTemplateArtifact = "build_output"
         AppSpecTemplateArtifact = "build_output"
         Image1ArtifactName = "build_output"
+        #If you forget this, you just get an internal error from AWS!
         Image1ContainerName = "IMAGE1_NAME"
       }
     }
