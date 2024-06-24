@@ -5,8 +5,9 @@ resource "aws_lb" "lb" {
 	internal = false
 	ip_address_type = "ipv4"
 	load_balancer_type = "application"
+	#TODO: security group just for lb
 	security_groups = [aws_security_group.allow_tls.id]
-	subnets = [aws_subnet.subnet-private-1.id, aws_subnet.subnet-private-2.id]
+	subnets = [aws_subnet.subnet-public-1.id, aws_subnet.subnet-public-2.id]
 }
 
 resource "aws_lb_listener" "lb_listener" {
@@ -26,6 +27,7 @@ resource "aws_lb_target_group" "blue" {
 	port = 80
 	vpc_id = aws_vpc.vpc.id
 	target_type = "ip"
+	deregistration_delay = "5"
 }
 
 resource "aws_lb_target_group" "green" {

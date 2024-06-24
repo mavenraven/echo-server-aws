@@ -23,6 +23,9 @@ resource "aws_ecs_service" "ecs_service" {
     type = "CODE_DEPLOY"
   }
 
+  # TODO: This is to make terraform iteration faster, remove later.
+  deployment_minimum_healthy_percent = 0
+
   load_balancer {
     container_name = "dummy"
     container_port = 80
@@ -30,7 +33,8 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   network_configuration {
-    subnets = [aws_subnet.subnet-private-1.id, aws_subnet.subnet-private-2.id]
+    subnets = [aws_subnet.subnet-private.id]
+    security_groups = [aws_security_group.allow_tls.id]
   }
 }
 
