@@ -55,7 +55,7 @@ resource "aws_iam_role" "fargate_iam_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "fargate_ec2" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   role       = aws_iam_role.fargate_iam_role.name
 }
 
