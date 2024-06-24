@@ -9,10 +9,19 @@ resource "aws_subnet" "subnet-public" {
 	availability_zone = "us-east-2a"
 }
 
-resource "aws_subnet" "subnet-private" {
+resource "aws_subnet" "subnet-private-1" {
 	vpc_id     = aws_vpc.vpc.id
 	cidr_block = "10.0.3.0/24"
 	availability_zone = "us-east-2a"
+}
+
+# We use a different AZs to make the ALB logic happy about:
+# "A load balancer cannot be attached to multiple subnets in the same Availability Zone"
+# Note that we don't have HA because I only set up a nat gateway in one AZ.
+resource "aws_subnet" "subnet-private-2" {
+	vpc_id     = aws_vpc.vpc.id
+	cidr_block = "10.0.4.0/24"
+	availability_zone = "us-east-2b"
 }
 
 resource "aws_internet_gateway" "internet_gateway" {
@@ -23,6 +32,10 @@ resource "aws_internet_gateway" "internet_gateway" {
 resource "aws_nat_gateway" "nat_gateway" {
 	subnet_id = aws_subnet.subnet-public.id
 	depends_on = [aws_internet_gateway.internet_gateway]
+	allocation_id = aws_eip.nat_gateway_ip.id
+}
+
+resource "aws_eip" "nat_gateway_ip" {
 }
 
 resource "aws_security_group" "allow_tls" {
@@ -74,7 +87,12 @@ resource "aws_route_table" "nat_route_table" {
 	}
 }
 
-resource "aws_route_table_association" "nat_route_table_association" {
+resource "aws_route_table_association" "private_1_route_table_association" {
 	route_table_id = aws_route_table.nat_route_table.id
-	subnet_id = aws_subnet.subnet-private.id
+	subnet_id = aws_subnet.subnet-private-1.id
+}
+
+resource "aws_route_table_association" "private_2_route_table_association" {
+	route_table_id = aws_route_table.nat_route_table.id
+	subnet_id = aws_subnet.subnet-private-1.id
 }
