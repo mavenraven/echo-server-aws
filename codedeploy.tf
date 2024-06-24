@@ -33,6 +33,18 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
   deployment_group_name = "echo_server_deployment_group"
   service_role_arn = aws_iam_role.codedeploy_iam_role.arn
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
+
+  blue_green_deployment_config {
+    deployment_ready_option {
+      action_on_timeout = "CONTINUE_DEPLOYMENT"
+    }
+
+    terminate_blue_instances_on_deployment_success {
+      action                           = "TERMINATE"
+      termination_wait_time_in_minutes = 5
+    }
+  }
+
   load_balancer_info {
     target_group_pair_info {
       prod_traffic_route {
