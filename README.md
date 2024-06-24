@@ -6,3 +6,4 @@
 - split out code build for templating stuff
 - template for ARN in task file
 - need to manually hook up codestarconnection after initial apply
+- set instance count via appspec
