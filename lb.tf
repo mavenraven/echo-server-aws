@@ -6,7 +6,7 @@ resource "aws_lb" "lb" {
 	ip_address_type = "ipv4"
 	load_balancer_type = "application"
 	security_groups = [aws_security_group.allow_tls.id]
-	subnets = [aws_subnet.subnet-2a.id, aws_subnet.subnet-2b.id]
+	subnets = [aws_subnet.subnet-private.id]
 }
 
 resource "aws_lb_listener" "lb_listener" {

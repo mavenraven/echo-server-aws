@@ -32,7 +32,7 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   network_configuration {
-    subnets = [aws_subnet.subnet-2b.id, aws_subnet.subnet-2b.id]
+    subnets = [aws_subnet.subnet-private.id]
   }
 }
 

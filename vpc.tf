@@ -21,7 +21,6 @@ resource "aws_internet_gateway" "internet_gateway" {
 
 # Needed so Fargate can pull from the public ECR endpoint without assigning each task a public IP.
 resource "aws_nat_gateway" "nat_gateway" {
-	vpc_id = aws_vpc.vpc.id
 	subnet_id = aws_subnet.subnet-public.id
 	depends_on = [aws_internet_gateway.internet_gateway]
 }
