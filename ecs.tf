@@ -1,11 +1,11 @@
-resource "aws_ecs_cluster" "ecs_cluster" {
+resource "aws_ecs_cluster" "echo_server" {
   name = "echo-server"
 }
 
-resource "aws_ecs_service" "ecs_service" {
-  name = "echo-server-task"
-  task_definition = aws_ecs_task_definition.initial_task.arn
-  cluster = aws_ecs_cluster.ecs_cluster.arn
+resource "aws_ecs_service" "echo_server" {
+  name = "echo-server"
+  task_definition = aws_ecs_task_definition.initial.arn
+  cluster = aws_ecs_cluster.echo_server.arn
   desired_count = 1
 
   capacity_provider_strategy {
@@ -19,18 +19,18 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   load_balancer {
-    container_name = "dummy"
+    container_name = "initial"
     container_port = 80
     target_group_arn = aws_lb_target_group.blue.arn
   }
 
   network_configuration {
     subnets = [aws_subnet.subnet-private.id]
-    security_groups = [aws_security_group.allow_tls.id]
+    security_groups = [aws_security_group.allow_http.id]
   }
 }
 
-data "aws_iam_policy_document" "fargate_trust_policy_document" {
+data "aws_iam_policy_document" "fargate" {
   statement {
     effect = "Allow"
 
@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "fargate_trust_policy_document" {
   }
 }
 
-data "aws_iam_policy_document" "fargate_create_log_groups_policy_document" {
+data "aws_iam_policy_document" "create_log_group" {
   statement {
     effect = "Allow"
 
@@ -52,39 +52,39 @@ data "aws_iam_policy_document" "fargate_create_log_groups_policy_document" {
   }
 }
 
-resource "aws_iam_policy" "fargate_create_log_groups_policy" {
-  policy = data.aws_iam_policy_document.fargate_create_log_groups_policy_document.json
+resource "aws_iam_policy" "fargate_create_log_group" {
+  policy = data.aws_iam_policy_document.create_log_group.json
 }
 
-resource "aws_iam_role" "fargate_iam_role" {
+resource "aws_iam_role" "fargate" {
   name               = "Fargate"
-  assume_role_policy = data.aws_iam_policy_document.fargate_trust_policy_document.json
+  assume_role_policy = data.aws_iam_policy_document.fargate.json
 }
 
-resource "aws_iam_role_policy_attachment" "fargate_ec2" {
+resource "aws_iam_role_policy_attachment" "fargate_ecs_task_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-  role       = aws_iam_role.fargate_iam_role.name
+  role       = aws_iam_role.fargate.name
 }
 
 resource "aws_iam_role_policy_attachment" "fargate_create_logs" {
-  policy_arn = aws_iam_policy.fargate_create_log_groups_policy.arn
-  role       = aws_iam_role.fargate_iam_role.name
+  policy_arn = aws_iam_policy.fargate_create_log_group.arn
+  role       = aws_iam_role.fargate.name
 }
 
 
 # For whatever reason, AWS requires that an ECS service is provisioned with a task definition
 # when the deployment controller is CODE_DEPLOY. So, this task definition just "primes the pump"
 # before the first actual deployment through code deploy.
-resource "aws_ecs_task_definition" "initial_task" {
+resource "aws_ecs_task_definition" "initial" {
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu = 256
   memory = 512
-  execution_role_arn = aws_iam_role.fargate_iam_role.arn
+  execution_role_arn = aws_iam_role.fargate.arn
 
   container_definitions = jsonencode([
     {
-      name = "dummy"
+      name = "initial"
       image = "public.ecr.aws/docker/library/nginx"
       memory = 512
       portMappings = [
@@ -105,5 +105,5 @@ resource "aws_ecs_task_definition" "initial_task" {
     }
 
   ])
-  family = "echo-server-task-definition"
+  family = "echo-server"
 }

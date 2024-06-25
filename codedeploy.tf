@@ -61,14 +61,14 @@ resource "aws_codedeploy_deployment_group" "echo_server" {
   }
 
   ecs_service {
-    cluster_name = aws_ecs_cluster.ecs_cluster.name
-    service_name = aws_ecs_service.ecs_service.name
+    cluster_name = aws_ecs_cluster.echo_server.name
+    service_name = aws_ecs_service.echo_server.name
   }
 
   load_balancer_info {
     target_group_pair_info {
       prod_traffic_route {
-        listener_arns = [aws_lb_listener.lb_listener.arn]
+        listener_arns = [aws_lb_listener.echo_server.arn]
       }
 
       target_group {
