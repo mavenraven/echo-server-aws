@@ -67,7 +67,6 @@ EOF
 
 resource "aws_iam_role_policy_attachment" "codebuild_s3" {
   role       = aws_iam_role.codebuild.name
-  #TODO: come back
   policy_arn = aws_iam_policy.codepipline_s3_policy.arn
 }
 
