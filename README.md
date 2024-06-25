@@ -18,5 +18,5 @@ I could have potentially used an ECR VPC endpoint instead. However, we would lik
 * The solution only supports a single AZ. This could be changed to support multiple AZs at the cost of another NAT gateway.
 * The instance count is set in terraform. There's a way to do this with the `appspec.yaml` file instead.
 * In the interest of time, I used a number of AWS provided policies (e.g. `AmazonAPIGatewayPushToCloudWatchLogs`) that aren't really appropriate for the usecase and give more permissions than necessary.
-* It would be nice to have a seperate codebuild stage just for building the templated files needed for deployment.
+* It would be nice to have a seperate CodeBuild stage just for building the templated files needed for deployment.
 * I introduced a template variable (`ECS_TASK_EXECUTION_ROLE_ARN`) for `taskdef.json`. It would be nice to make it `<ECS_TASK_EXECUTION_ROLE_ARN>` instead to match the style of AWS.
