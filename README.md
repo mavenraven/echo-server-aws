@@ -1,7 +1,7 @@
 # echo-server-aws
 The purpose of this repo is to be able to fully deploy the [echo-server](https://github.com/mavenraven/echo-server) from source onto AWS.
 
-I've been recently using [render.com](render.com), and I wanted to try to replicate its workflow. Render automatically deploys whatever is on the main branch which makes for a nice developer experience.
+I've been recently using [render.com](https://www.render.com), and I wanted to try to replicate its workflow. Render automatically deploys whatever is on the main branch which makes for a nice developer experience.
 
 To accomplish this, I used AWS CodePipeline and friends. I also set up the deployments to use the blue green functionality offered by CodeDeploy.
 
