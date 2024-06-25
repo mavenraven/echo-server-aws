@@ -14,7 +14,7 @@ I could have potentially used an ECR VPC endpoint instead. However, we would lik
 2. [Set up the OAuth connection to github.](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
 # limitations and future enhancements
-* The load balancer is currenly set up to only support unecrypted traffic. It would be nice to set up TLS via AWS ACM.
+* The load balancer is currenly set up to only support unecrypted traffic. It would be necessary to set up TLS before actually using this solution.
 * The solution only supports a single AZ. This could be changed to support multiple AZs at the cost of another NAT gateway.
 * The instance count is set in terraform. There's a way to do this with the `appspec.yaml` file instead.
 * In the interest of time, I used a number of AWS provided policies (e.g. `AmazonAPIGatewayPushToCloudWatchLogs`) that aren't really appropriate for the usecase and give more permissions than necessary.
