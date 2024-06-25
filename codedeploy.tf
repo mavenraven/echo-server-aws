@@ -1,10 +1,10 @@
-resource "aws_codedeploy_app" "codedeploy_app" {
+resource "aws_codedeploy_app" "echo_server" {
   compute_platform = "ECS"
-  name             = "echo_server"
+  name             = "echo-server"
 
 }
 
-data "aws_iam_policy_document" "codedeploy_policy_document" {
+data "aws_iam_policy_document" "assume_for_codedeploy" {
   statement {
     effect = "Allow"
 
@@ -17,30 +17,30 @@ data "aws_iam_policy_document" "codedeploy_policy_document" {
   }
 }
 
-resource "aws_iam_role" "codedeploy_iam_role" {
+resource "aws_iam_role" "codedeploy" {
   name               = "CodeDeploy"
-  assume_role_policy = data.aws_iam_policy_document.codedeploy_policy_document.json
+  assume_role_policy = data.aws_iam_policy_document.assume_for_codedeploy.json
 }
 
-resource "aws_iam_role_policy_attachment" "aws_code_deploy_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "codedeploy_codedeploy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
-  role       = aws_iam_role.codedeploy_iam_role.name
+  role       = aws_iam_role.codedeploy.name
 }
 
-resource "aws_iam_role_policy_attachment" "code_deploy_ecs_access_attachment" {
-  role       = aws_iam_role.codedeploy_iam_role.name
+resource "aws_iam_role_policy_attachment" "codedeploy_ecs" {
+  role       = aws_iam_role.codedeploy.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "code_deploy_lb_access_attachment" {
-  role       = aws_iam_role.codedeploy_iam_role.name
+resource "aws_iam_role_policy_attachment" "codedeploy_lb" {
+  role       = aws_iam_role.codedeploy.name
   policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
 }
 
-resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
-  app_name = aws_codedeploy_app.codedeploy_app.name
-  deployment_group_name = "echo_server_deployment_group"
-  service_role_arn = aws_iam_role.codedeploy_iam_role.arn
+resource "aws_codedeploy_deployment_group" "echo_server" {
+  app_name = aws_codedeploy_app.echo_server.name
+  deployment_group_name = "echo-server-deployment-group"
+  service_role_arn = aws_iam_role.codedeploy.arn
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
 
 
@@ -80,7 +80,4 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
       }
     }
   }
-
-
-
 }

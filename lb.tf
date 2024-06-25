@@ -22,6 +22,7 @@ resource "aws_lb_listener" "lb_listener" {
 
 }
 
+#TODO: change name, misleading
 resource "aws_lb_target_group" "blue" {
 	protocol = "HTTP"
 	port = 80
@@ -30,6 +31,7 @@ resource "aws_lb_target_group" "blue" {
 	deregistration_delay = "5"
 }
 
+#TODO: change name, misleading
 resource "aws_lb_target_group" "green" {
 	protocol = "HTTP"
 	port = 80

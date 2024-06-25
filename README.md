@@ -6,4 +6,7 @@
 - split out code build for templating stuff
 - template for ARN in task file
 - need to manually hook up codestarconnection after initial apply
+- pull containers from inside the vpc, but in a real deployment, you need to reach out to other thrid party services anyway
 - set instance count via appspec
+- templaing doesn't use <>
+- AmazonAPIGatewayPushToCloudWatchLogs
