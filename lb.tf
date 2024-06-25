@@ -1,11 +1,8 @@
-
-
 resource "aws_lb" "echo_server" {
 	name = "echo-server-lb"
 	internal = false
 	ip_address_type = "ipv4"
 	load_balancer_type = "application"
-	#TODO: security group just for lb
 	security_groups = [aws_security_group.allow_http.id]
 	subnets = [aws_subnet.public-1.id, aws_subnet.public-2.id]
 }

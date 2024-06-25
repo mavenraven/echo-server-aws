@@ -20,7 +20,6 @@ resource "aws_iam_role" "codepipeline" {
   })
 }
 
-#TODO: redudant now probably
 resource "aws_iam_role_policy_attachment" "codepipeline_codepipeline" {
   role       = aws_iam_role.codepipeline.name
   policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
