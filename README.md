@@ -5,7 +5,9 @@ I've been recently using [render.com](render.com), and I wanted to try to replic
 
 To accomplish this, I used AWS CodePipeline and friends. I also set up the deployments to use the blue green functionality offered by CodeDeploy.
 
-I used ECS Fargate for the deployment target. A NAT gateway is used to allow for the Fargate VMs to pull from ECR. I could have potentially used an ECR VPC endpoint instead, but I figured that in a real service, we'd likely need to internet access to call third party services anyways.
+I used ECS Fargate for the deployment target. A NAT gateway is used to allow for the Fargate VMs to pull from ECR.
+
+I could have potentially used an ECR VPC endpoint instead. However, we would likely need to call third party services in a real app anyways.
 
 # setup
 1. `terraform apply`
